@@ -1,0 +1,9 @@
+Flask>=3.0
+requirements.txt
+flask-socketio>=5.3
+eventlet>=0.35
+pyserial
+requests
+python-dotenv
+azure-data-tables>=12.5
+gunicorn

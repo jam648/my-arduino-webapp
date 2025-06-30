@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <title>Arduino配送ステータス</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  </head>
+  <body class="h-full bg-white text-gray-900 flex flex-col">
+    <header class="shadow-md">
+      <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-blue-700">
+          Arduino&nbsp;配送ステータス
+        </h1>
+        <button
+          id="btn-reverse"
+          class="bg-blue-500 text-white font-semibold rounded-xl px-6 py-3 shadow-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 transition-all"
+        >
+          ポストを元に戻す
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-4xl mx-auto px-4 py-8 space-y-8">
+      <!-- System status card -->
+      <section
+        class="border border-gray-300 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
+      >
+        <h2 class="text-xl font-semibold mb-4">現在の状態</h2>
+        <p id="last-message" class="text-lg text-gray-700">
+          システム待機中...
+        </p>
+        <p
+          id="last-updated"
+          class="text-sm text-gray-600 mt-2"
+          aria-live="polite"
+        ></p>
+      </section>
+
+      <!-- Deliveries history -->
+      <section>
+        <h2 class="text-xl font-semibold mb-4">配達履歴</h2>
+        <div
+          id="deliveries"
+          class="grid grid-cols-1 sm:grid-cols-2 gap-4"
+          aria-live="polite"
+        ></div>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>
