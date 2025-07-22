@@ -84,7 +84,7 @@ void loop() {
 
     // 受信したコマンドが "EXEC_REV_SEQ" という文字列と一致するか比較します。
     if (strcmp(cmd, "EXEC_REV_SEQ") == 0) {
-      // 一致した場合、回収シーケンスを開始するためのコマンドを送信します。
+      // 一致した場合、回収動作を開始するためのコマンドを送信します。
       sendCommand("REV_SEQ_START");
       // 荷物の検知回数をリセットします。
       triggerCount = 0;
