@@ -6,8 +6,8 @@
 #include <SoftwareSerial.h> // Arduino Aとの有線シリアル通信に必要
 
 // ----- モータードライバーのピン設定 -----
-const int MOTOR_SPEED = 50; // モーターの回転速度(PWMのデューティ比, 0-255)
-const int ROTATION_DURATION = 2000; // 一度のコマンドでモーターが回転し続ける時間(ミリ秒)
+const int MOTOR_SPEED = 30; // モーターの回転速度(PWMのデューティ比, 0-255)
+const int ROTATION_DURATION = 500; // 一度のコマンドでモーターが回転し続ける時間(ミリ秒)
 
 // モータードライバ1 (M1, M2用) のピン割り当て
 #define M1_PWM 3  // モーター1 速度制御(PWM)
@@ -37,8 +37,8 @@ unsigned long motorStopTimes[4] = {0, 0, 0, 0}; // 各モーターの自動停�
 
 // 逆回転動作の状態を管理するための「状態(State)」を列挙型(enum)で定義
 enum SeqState { IDLE, STEP_M3_REV, WAIT1, STEP_M4_REV, WAIT2, STEP_M1_REV, WAIT3, STEP_M2_REV };
-SeqState revSequenceState = IDLE; // 現在のシーケンス状態を保持する変数。初期状態はIDLE(待機)
-unsigned long seqLastStepTime = 0; // シーケンスの各ステップが開始した時刻を記録する変数
+SeqState revSequenceState = IDLE; // 現在の動作状態を保持する変数。初期状態はIDLE(待機)
+unsigned long seqLastStepTime = 0; // 動作の各ステップが開始した時刻を記録する変数
 
 // 動作内の待機時間（ミリ秒）
 const int SEQ_SHORT_DELAY = 200;
@@ -56,7 +56,7 @@ void setup() {
     pinMode(pin, OUTPUT);
   }
   
-  // 起動時にモータードライバを有効(アクティブ)にする
+  // 起動時にモータードライバを有効にする
   digitalWrite(STBY_PIN1, HIGH);
   digitalWrite(STBY_PIN2, HIGH);
 
@@ -86,13 +86,13 @@ void stopAllMotors() {
   
   // 全停止時にはモータードライバを待機モード(低消費電力)にする
   digitalWrite(STBY_PIN1, LOW);
-  //digitalWrite(STBY_PIN2, LOW);
+  digitalWrite(STBY_PIN2, LOW);
   Serial.println("全モーター停止。ドライバ待機モード。");
 }
 
 // 指定されたモーターを制御する（回転方向と自動停止タイマーの設定）
 void controlMotor(int motorNumber, bool forward) {
-  // モーターを動かす前に、必ずドライバを有効(アクティブ)にする
+  // モーターを動かす前に、必ずドライバを有効にする
   digitalWrite(STBY_PIN1, HIGH);
   digitalWrite(STBY_PIN2, HIGH);
 
@@ -119,7 +119,7 @@ void controlMotor(int motorNumber, bool forward) {
 
 // 逆回転動作を進行させる関数
 void updateReverseSequence() {
-  // 動作実行中でなければ(IDLE状態なら)何もせずに関数を抜ける
+  // 動作実行中でなければ何もせずに関数を抜ける
   if (revSequenceState == IDLE) return; 
 
   unsigned long currentTime = millis(); // 現在時刻を取得
