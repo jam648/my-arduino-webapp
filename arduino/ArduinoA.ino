@@ -19,9 +19,9 @@ SoftwareSerial C_Serial(A2, A3);
 // ----- 定数の設定 -----
 const int SENSOR_PIN = A0;
 const int NEAR_THRESHOLD = 500;
-const unsigned long COOLDOWN_PERIOD = 3000;
+const unsigned long COOLDOWN_PERIOD = 5000;
 const int COMMAND_DELAY = 200;
-
+const int WAIT_DELAY = 3000;
 // ----- グローバル変数の設定 -----
 int sensorValue;
 int triggerCount = 0;
@@ -55,7 +55,7 @@ void sendCommand(const char* command) {
   Serial.print("生成コマンド: ");
   Serial.println(command);
 
-  char cmd_buffer[30];
+  char cmd_buffer[32];
   strcpy(cmd_buffer, command);
 
   // Arduino Cへ有線で送信
@@ -106,12 +106,13 @@ void loop() {
     triggerCount++;
 
     // 送信するコマンド文字列を格納するための配列を用意します。
-    char message[30] = "";
+    char message[32] = "";
 
     // 検知回数に応じて、実行する処理を分岐します。
     switch (triggerCount) {
       case 1:
         // 1回目の検知の場合、モーター1と2を順番に作動させるコマンドを送信します。
+        delay(WAIT_DELAY);
         strcpy(message, "M1_ON");
         sendCommand(message);
         delay(COMMAND_DELAY); // 次のコマンド送信までに少し待ちます。
@@ -120,6 +121,7 @@ void loop() {
         break;
       case 2:
         // 2回目の検知の場合、モーター3と4を順番に作動させるコマンドを送信します。
+        delay(WAIT_DELAY);
         strcpy(message, "M3_ON");
         sendCommand(message);
         delay(COMMAND_DELAY);
